@@ -1,0 +1,94 @@
+.program bin6Data
+
+;IN pin 1 is the clock pin
+;In pin 0 is the data pin
+
+;set pindir, 1 ;set pins to output
+
+.wrap_target
+startbit:
+;wait for the clock to go high
+wait 0 pin 1
+wait 1 pin 1
+
+; a short clock cycle (between bits) is low for 209us and high for 84us
+; a longer clock cycle (between words) is low for 209us and high for 377us
+; test between >209 us & <293us after falling edge
+; five cycles of nop [23] should give 257us ish
+
+
+set y, 4; 4
+sync:
+    nop [23] ;nop [23]
+jmp y--, sync
+
+
+; test clock if low we are on a bit if high we are between datagrams
+;if clock pin is high jump to the beginning
+
+jmp pin, secondcheck 
+jmp , startbit
+
+secondcheck:
+set y, 3
+longbit:
+nop [23] 
+jmp y--, longbit
+
+jmp pin, startdata 
+jmp , startbit
+
+startdata:
+in null, 32 ; clear the ISR
+
+; get data from the data line
+set x, 23
+data:
+
+;wait for the clock's rising edge
+wait 0 pin 1
+wait 1 pin 1
+
+in pins, 1 ; move 1 bit from the data pin to the ISR
+
+jmp x--, data
+
+
+
+push block ; send the contence of the ISR to the RX FIFO
+.wrap
+
+% c-sdk {
+static inline void bin6Data_program_init(PIO pio, uint sm, uint offset, uint pin) {
+    pio_sm_config c = bin6Data_program_get_default_config(offset);
+
+    // Set the IN base to the provided pin parameter this is the data pin.
+    //the next numbered gpio is the clock pin
+    sm_config_set_in_pins(&c, pin);
+    // Set the clock pin as a jump pin
+    sm_config_set_jmp_pin(&c, pin + 1);
+    
+    // Set the pin direction to input at the PIO
+    pio_sm_set_consecutive_pindirs(pio, sm, pin, 2, false);
+    
+
+    // Set this pin's GPIO function (connect PIO to the pad)
+    pio_gpio_init(pio, pin);
+    pio_gpio_init(pio, pin + 1);
+
+    // shifting to left matches the customary MSB-first
+    
+    // Set clock divider
+    sm_config_set_clkdiv_int_frac(&c, 255, 0);
+
+    // we only receive data so the TX FIFO can be joined to the RX FIFO to make it bigger
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_RX);
+
+    // Load our configuration, and jump to the start of the program
+    pio_sm_init(pio, sm, offset, &c);
+
+    // Set the state machine running
+    pio_sm_set_enabled(pio, sm, true);
+
+}
+%}
