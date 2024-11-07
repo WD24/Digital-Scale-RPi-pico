@@ -12,7 +12,7 @@ Level shifting might also be needed if you are using a scale that is outputting 
 
 To use:
 
-Add Scale.h, Scale.c and Scale.pio to your project file.
+Add Scale.h, Scale.c and Scale.pio to your project folder.
 
 In your CMakeList.txt add: 
 "Scale.c" to the add_executable:  add_executable(myproject main.c Scale.c) 
