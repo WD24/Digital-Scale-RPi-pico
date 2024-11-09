@@ -55,5 +55,7 @@ This tells the pico to read the state machine's output FIFO and store the data i
     //This is the converted data, into a useful format. Depending on the scale's output one unit will be converted from the raw data and the other will be calculated by the pico. Inorder to find out if your scale is out putting metric or imperial data check the isImperial boolean.
 
 To acces the data:
+
     printf("%.2f mm   %.3f inches\n", reading.millimeters, reading.inches);
+    
 This outputs both the millimetre and inch data to the serial console. 
