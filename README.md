@@ -1,4 +1,4 @@
-THIS LIBRARY IS STILL UNDER DEVELOPMENT The code may be messy at best and may not work.
+THIS LIBRARY IS STILL UNDER DEVELOPMENT The code may be messy at best and may not work and is likly to change without notice.
 
 Using the PIO on the Raspberry Pi Pico this code reads the clock and data outputs from a digital scale or caliper (from reading around the internet I believe it is outputting bin6 data format (24 bit)).
 The data is in six words of four bits, The first four words (2 bytes) gives the measurement as an integer the fifth word appears to be null (it might be an overflow for the measurement but my scale didn't need it if it is.) the sixth word gives two booleans. The first bit is for if the number is positive or negative and the last bit is for if the number is metric or imperial.
@@ -8,10 +8,13 @@ This code uses one state machine for each scale connected. Most of the PIO code 
 
 I have tested this code on a M-SURE MS-276-300 scale running on 3 volts. The M-sure scales have a mini usb plug but do not use the standard usb wiring, instead it used the USB vbus for data, D- for clock D+ for Gnd and ID for 3 volts in. 
 
+![P1200118](https://github.com/user-attachments/assets/bd9da444-4988-48bf-8299-891a625fcde1)
+
+
 The data lines and clock lines need to be adjacent to each other on the pico's gpio lines with the data line first.
 Level shifting might also be needed if you are using a scale that is outputting 1.5 vols.
 
-To use:
+How to use:
 
 Add Scale.h, Scale.c and Scale.pio to your project folder.
 
