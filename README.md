@@ -2,6 +2,7 @@ THIS LIBRARY IS STILL UNDER DEVELOPMENT The code may be messy at best and may no
 
 Using the PIO on the Raspberry Pi Pico this code reads the clock and data outputs from a digital scale or caliper (from reading around the internet I believe it is outputting bin6 data format (24 bit)).
 The data is in six words of four bits, The first four words (2 bytes) gives the measurement as an integer the fifth word appears to be null (it might be an overflow for the measurement but my scale didn't need it if it is.) the sixth word gives two booleans. The first bit is for if the number is positive or negative and the last bit is for if the number is metric or imperial.
+
 ![Datagram example](https://github.com/user-attachments/assets/f7995fb9-89e6-450b-a9dc-31992b5326b1)
 
 This code uses one state machine for each scale connected. Most of the PIO code identify the start bit and clears the output shift register.  As a result the code reads the data from the scale every other datagram (approximately four times a second).
