@@ -28,9 +28,9 @@ int main()
 
     // Initalize PIO
     uint sm1 = 0; //Statemachine for the first instance
-    uint gpio1 = 2; //Pins for the first instance
+    uint gpio1 = 2; //Pins for the first instance: pin 2 dor data and 3 for clock
     uint sm2 = 1; //Statemachine for the second instance
-    uint gpio2 = 6; //Pins for the second instance
+    uint gpio2 = 12; //Pins for the second instance: //Pins for the first instance pin 12 dor data and 13 for clock
     PIO pio = pio0;
     
     //first statemachine 
@@ -38,11 +38,8 @@ int main()
     scale_init(pio, sm1, gpio1);
 
     //second statemachine 
-    // Initialize scale with PIO and state machine
-    /* 
-    scale_init(pio, sm2, gpio2);
-    */
-    //bin6Data_program_init(pio, sm2, offset, gpio2);
+    // Initialize scale with PIO and state machine 
+    //scale_init(pio, sm2, gpio2);
         
     ScaleRawData reading; //initalize struct for reading data into
 
@@ -56,12 +53,26 @@ int main()
         gpio_put(25, 0); // Set pin 25 to low
         sleep_ms(100); // 0.5s delay
         
-
+        //Example with a single scale 
+        
         // Read scale data and process it
         scale_read(pio, sm1, &reading);
 
         // Print the result in mm and inches
         printf("%.2f mm   %.3f inches\n", reading.millimeters, reading.inches);
+
+        /* 
+        //Example with two scales
+        // Read scale data and process it
+        scale_read(pio, sm1, &reading);
+        float Xreading = reading.millimeters;
+
+        scale_read(pio, sm2, &reading);
+        float Yreading = reading.millimeters;
+        
+        // Print the results
+        printf("X scale %.2f mm   Y scale %.2f mm\n", Xreading, Yreading);
+        */
 
         sleep_ms(10);
 
