@@ -24,7 +24,7 @@ In your CMakeList.txt add:
 Generate the PIO headder file with: pico_generate_pio_header (myproject ${CMAKE_CURRENT_LIST_DIR}/Scale.pio)
 make sure you have the pico standard library, hardware GPIO library and  hardware PIO library: target_link_libraries(myproject pico_stdlib hardware_gpio hardware_pio)
 
-In our main program file add:
+In your main program file add:
 #include "Scale.pio.h"
 #include "scale.h"  // Include the scale library header 
 
@@ -40,6 +40,11 @@ To Initialize the PIO state machine:
     example: scale_init(0, 2, 5);
 
 Where: pio is the PIO (0 or 1 (or 2 on the new pico2), sm is the state machine you wish to use, and gpio is the first pin for data transfer the adjacent pin will be used for clock. In the above example it s using PIO0, state machine 2 and pin 5 for data and pin 6 for clock.
+
+In the main function int main()
+Initialize the struct for storing the data with:
+
+ScaleRawData reading; //initalize struct for reading data into
 
 To read the scale:
 
