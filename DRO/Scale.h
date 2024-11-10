@@ -25,6 +25,6 @@ typedef struct {
 
 
 // Reads the scale and updates the provided `ScaleRawData` structure
-void scale_read(PIO pio, uint sm, ScaleRawData *reading);
+int scale_read(PIO pio, uint sm, ScaleRawData *reading);
 
 #endif // SCALE_H
