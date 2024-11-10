@@ -54,24 +54,34 @@ int main()
         sleep_ms(100); // 0.5s delay
         
         //Example with a single scale 
-        
         // Read scale data and process it
-        scale_read(pio, sm1, &reading);
+        int result;
 
-        // Print the result in mm and inches
-        printf("%.2f mm   %.3f inches\n", reading.millimeters, reading.inches);
-
+        result = scale_read(pio, sm1, &reading);
+        if (result == 1) 
+        {
+            // Print the result in mm and inches
+            printf("%.2f mm   %.3f inches\n", reading.millimeters, reading.inches);
+        }
+        
         /* 
         //Example with two scales
-        // Read scale data and process it
-        scale_read(pio, sm1, &reading);
-        float Xreading = reading.millimeters;
+        // Read scales and process it
+        int result;
 
-        scale_read(pio, sm2, &reading);
-        float Yreading = reading.millimeters;
-        
-        // Print the results
-        printf("X scale %.2f mm   Y scale %.2f mm\n", Xreading, Yreading);
+        result = scale_read(pio, sm1, &reading);
+        if (result == 1) 
+        {
+            float Xreading = reading.millimeters;
+            printf("X scale %.2f mm   ", Xreading);
+        }
+
+        result = scale_read(pio, sm2, &reading);
+        if (result == 1) 
+        {
+            float Yreading = reading.millimeters;
+            printf("Y scale %.2f mm\n", Yreading);
+        }
         */
 
         sleep_ms(10);
