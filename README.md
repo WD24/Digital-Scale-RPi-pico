@@ -25,18 +25,26 @@ Generate the PIO headder file with: pico_generate_pio_header (myproject ${CMAKE_
 make sure you have the pico standard library, hardware GPIO library and  hardware PIO library: target_link_libraries(myproject pico_stdlib hardware_gpio hardware_pio)
 
 In your main program file add:
+
 #include "Scale.pio.h"
+
 #include "scale.h"  // Include the scale library header 
 
 and ensure you have added the hardware PIO and GPIO libraries:
+
 #include <stdio.h>
+
 #include "pico/stdlib.h"
+
 #include "hardware/gpio.h"
+
 #include "hardware/pio.h"
 
 
 To Initialize the PIO state machine:
+
     scale_init(pio, sm, gpio);
+    
     example: scale_init(0, 2, 5);
 
 Where: pio is the PIO (0 or 1 (or 2 on the new pico2), sm is the state machine you wish to use, and gpio is the first pin for data transfer the adjacent pin will be used for clock. In the above example it s using PIO0, state machine 2 and pin 5 for data and pin 6 for clock.
@@ -44,24 +52,40 @@ Where: pio is the PIO (0 or 1 (or 2 on the new pico2), sm is the state machine y
 In the main function int main()
 Initialize the struct for storing the data with:
 
-ScaleRawData reading; //initalize struct for reading data into
+ScaleRawData reading;
 
 To read the scale:
 
         scale_read(pio, sm, &reading); // Read scale data and process it
 
 This tells the pico to read the state machine's output FIFO and store the data in a struct. 
+
     float distance; 
+    
     bool isImperial;
+    
     bool isPositive;
-    // Raw measurement values used for conversion into useful data.
+    
+These are raw measurement values used for conversion into useful data.
     
     float millimeters;
+    
     float inches;
-    //This is the converted data, into a useful format. Depending on the scale's output one unit will be converted from the raw data and the other will be calculated by the pico. Inorder to find out if your scale is out putting metric or imperial data check the isImperial boolean.
+    
+This is the converted data, into a useful format. Depending on the scale's output one unit will be converted from the raw data and the other will be calculated by the pico. If you want to find out if your scale is out putting metric or imperial data check the isImperial boolean.
+
+The function scale_read() will store the data in a struct it also returns a value of 1 if the scale was read or 0 if there was no data to read.
+
+    int result = scale_read(pio, sm2, &reading);
+
+returns a 1 or 0.
 
 To acces the data:
 
     printf("%.2f mm   %.3f inches\n", reading.millimeters, reading.inches);
     
 This outputs both the millimetre and inch data to the serial console. 
+
+    float Scale_Reading = reading.millimeters;
+
+This puts the data in to a float for further processing by your sketch
